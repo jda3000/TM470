@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		38899F10276E422A006F32C5 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38899F0F276E422A006F32C5 /* CoreLocation.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		82A548FA32223ECCC5CD507D /* libPods-TM470-TM470Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC8E68DD6B494F3B22463978 /* libPods-TM470-TM470Tests.a */; };
 		A2826AEF390F1B217B301D3B /* libPods-TM470.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFB08A7AADE842A4439AF518 /* libPods-TM470.a */; };
@@ -39,6 +40,7 @@
 		1A38DD41443A9473EDBA9FCF /* Pods-TM470.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TM470.release.xcconfig"; path = "Target Support Files/Pods-TM470/Pods-TM470.release.xcconfig"; sourceTree = "<group>"; };
 		1D379725E1FE2100AE915F26 /* Pods-TM470.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TM470.debug.xcconfig"; path = "Target Support Files/Pods-TM470/Pods-TM470.debug.xcconfig"; sourceTree = "<group>"; };
 		1E7FD3376AD026BD494BA432 /* Pods-TM470-TM470Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TM470-TM470Tests.debug.xcconfig"; path = "Target Support Files/Pods-TM470-TM470Tests/Pods-TM470-TM470Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		38899F0F276E422A006F32C5 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TM470/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC8E68DD6B494F3B22463978 /* libPods-TM470-TM470Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TM470-TM470Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFB08A7AADE842A4439AF518 /* libPods-TM470.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TM470.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38899F10276E422A006F32C5 /* CoreLocation.framework in Frameworks */,
 				A2826AEF390F1B217B301D3B /* libPods-TM470.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +102,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				38899F0F276E422A006F32C5 /* CoreLocation.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				BFB08A7AADE842A4439AF518 /* libPods-TM470.a */,
 				BC8E68DD6B494F3B22463978 /* libPods-TM470-TM470Tests.a */,
@@ -114,7 +118,6 @@
 				1E7FD3376AD026BD494BA432 /* Pods-TM470-TM470Tests.debug.xcconfig */,
 				F2AF363CB30201A857291EA9 /* Pods-TM470-TM470Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -134,6 +137,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4532F17FDBDBD7F4E72C714E /* Pods */,
+				DD09F310B4DB47BBBADB3EC8 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +151,13 @@
 				00E356EE1AD99517003FC87E /* TM470Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DD09F310B4DB47BBBADB3EC8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -485,6 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BRXG5Z727J;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TM470/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,6 +523,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BRXG5Z727J;
 				INFOPLIST_FILE = TM470/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
