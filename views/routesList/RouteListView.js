@@ -1,4 +1,8 @@
 import React from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 import {
   View,
@@ -8,9 +12,13 @@ import {
   StyleSheet,
 } from "react-native";
 
+import BeatHeader from './sections/BeatHeader'
+
 import MapView, { Polyline } from "react-native-maps";
-import axios from "axios";
+import { http } from "../../services";
 import convertBeat from "./helpers";
+import Feather from "react-native-vector-icons/Feather";
+import BeatFooterList from "./sections/BeatFooterList";
 
 class RouteListView extends React.Component {
   constructor(props) {
@@ -23,6 +31,7 @@ class RouteListView extends React.Component {
     this.getData = this.getData.bind(this);
     this.getMoreData = this.getMoreData.bind(this);
     this.mapRefs = [];
+    this.setLikes = this.setLikes.bind(this)
   }
 
   componentDidMount() {
@@ -38,9 +47,9 @@ class RouteListView extends React.Component {
     let excludeFirst = 0;
     if (loadMore) excludeFirst = this.state.data.length;
 
-    axios.get("http://192.168.1.141:8000/beats/api/list", { params: { exclude_first: excludeFirst } }).then(
+    http.get("beats/api/list", { params: { exclude_first: excludeFirst } }).then(
       response => {
-        let newData = this.convertServerData(response)
+        let newData = this.convertServerData(response);
         if (loadMore) {
           this.setState({ data: [...this.state.data, ...newData], loading: false });
         } else {
@@ -56,10 +65,10 @@ class RouteListView extends React.Component {
     );
   }
 
-  convertServerData (response) {
+  convertServerData(response) {
     // converts data from server database for compatibility within app
     return response.data.map(beat => {
-     return convertBeat(beat)
+      return convertBeat(beat);
     });
   }
 
@@ -82,20 +91,17 @@ class RouteListView extends React.Component {
   }
 
   renderBeat({ item, index }) {
-    const backgroundColor = "#6e3b6e";
+
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate("RouteDetailView", { id: item.id, onRefresh: this.getData })}
-        style={[styles.item, backgroundColor]}
+        style={styles.item}
         activeOpacity={0.9}
       >
-
-        <View style={{ flex: 2, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
-          <View><Text style={styles.title}>{item.description}</Text></View>
-        </View>
+        <BeatHeader item={item} />
 
         <MapView
-          ref={(ref) => this.mapRefs[index] = ref }
+          ref={(ref) => this.mapRefs[index] = ref}
           initialRegion={item.initialRegion}
           style={styles.map}
           scrollEnabled={false}
@@ -119,14 +125,17 @@ class RouteListView extends React.Component {
           />
         </MapView>
 
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-evenly", alignItems: "center" }}>
-          <View><Text>COMMENTS</Text></View>
-          <View><Text>SHARE</Text></View>
-          <View><Text>LIKE</Text></View>
-        </View>
+        <BeatFooterList item={item} onLikesChange={(data) => this.setLikes(data, item, index)} />
 
       </TouchableOpacity>
     );
+  }
+
+  setLikes (data, item, index) {
+    // sets like's on beat detail (after adding a new like)
+    const newData = [...this.state.data]
+    newData[index].likes = data
+    this.setState({...this.state, data: newData})
   }
 
   render() {
@@ -174,6 +183,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
+  },
+  button: {
+    padding: 10,
   },
 });
 

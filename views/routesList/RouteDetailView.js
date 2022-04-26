@@ -1,20 +1,26 @@
 import React from "react";
 import convertBeat from "./helpers";
 
-
-
-
 import {
   View,
-  StyleSheet, TouchableOpacity, ActionSheetIOS, Alert, LogBox
+  Text,
+  TouchableOpacity,
+  ActionSheetIOS,
+  Alert,
+  LogBox,
 } from "react-native";
-import MapView, { Polyline } from "react-native-maps";
 
-import axios from "axios";
+import { http } from "../../services";
 import Feather from "react-native-vector-icons/Feather";
+import BeatHeader from "./sections/BeatHeader";
+import BeatLikes from "./sections/BeatLikes";
+import BeatMap from "./sections/BeatMap";
+import BeatImages from "./sections/BeatImages";
+import BeatComments from "./sections/BeatComments";
+
 
 LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
+  "Non-serializable values were found in the navigation state",
 ]);
 
 
@@ -26,9 +32,10 @@ class RouteDetailView extends React.Component {
     };
     this.id = props.route.params.id;
     this.fetchDetail = this.fetchDetail.bind(this);
-    this.map = React.createRef();
     this.showMenu = this.showMenu.bind(this);
     this.deleteDetail = this.deleteDetail.bind(this);
+    this.setComments = this.setComments.bind(this)
+    this.setLikes = this.setLikes.bind(this)
   }
 
   componentDidMount() {
@@ -39,13 +46,13 @@ class RouteDetailView extends React.Component {
           <Feather name="more-horizontal" color={color} size={25} />
         </TouchableOpacity>
       ),
-    })
+    });
   }
 
   showMenu() {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "Delete Activity"],
+        options: ["Cancel", "Delete Activity", 'Edit Activity'],
         destructiveButtonIndex: 1,
         cancelButtonIndex: 0,
       },
@@ -64,15 +71,18 @@ class RouteDetailView extends React.Component {
             ],
           );
         }
+        else if (buttonIndex === 2) {
+          console.log('edit activity')
+        }
       },
     );
   }
 
   deleteDetail() {
-    axios.delete("http://192.168.1.141:8000/beats/api/beat_detail", { params: { id: this.state.data.id } }).then(
+    http.delete("beats/api/beat_detail", { params: { id: this.state.data.id } }).then(
       response => {
-        this.props.navigation.goBack()
-        this.props.route.params.onRefresh()
+        this.props.navigation.goBack();
+        this.props.route.params.onRefresh();
       },
     ).catch(
       error => {
@@ -83,10 +93,9 @@ class RouteDetailView extends React.Component {
 
   fetchDetail() {
     // load detail data from server
-    axios.get("http://192.168.1.141:8000/beats/api/beat_detail", { params: { id: this.props.route.params.id } }).then(
+    http.get("beats/api/beat_detail", { params: { id: this.props.route.params.id } }).then(
       response => {
         this.setState({ data: convertBeat(response.data) });
-        this.setMap();
       },
     ).catch(
       error => {
@@ -95,59 +104,36 @@ class RouteDetailView extends React.Component {
     );
   }
 
-  setMap() {
-    // set the map view port to fit the coordinates
-    if (this.map.current && this.state.data) {
-      this.map.current.fitToCoordinates(this.state.data.route, {
-        edgePadding: {
-          top: 40,
-          right: 40,
-          bottom: 40,
-          left: 40,
-        }, animated: false,
-      });
-    }
+  setComments (data) {
+    // sets comment's on beat detail (after adding a new comment)
+    this.setState({...this.state, data: {...this.state.data, comments: data}})
+  }
+
+  setLikes (data) {
+    // sets like's on beat detail (after adding a new like)
+    this.setState({...this.state, data: {...this.state.data, likes: data}})
+  }
+
+  renderDetail() {
+    return (
+      <View style={{ flex: 1 }}>
+        <BeatHeader item={this.state.data} />
+        <BeatMap item={this.state.data} />
+        <BeatLikes item={this.state.data} onLikesChange={this.setLikes} />
+        <BeatComments item={this.state.data} onCommentsChange={this.setComments} />
+        <BeatImages item={this.state.data} />
+      </View>
+    );
   }
 
   render() {
+    if (this.state.data) return this.renderDetail();
     return (
-      <View style={styles.container}>
-        <MapView
-          ref={this.map}
-          initialRegion={this.state.data ? this.state.data.initialRegion : null}
-          style={styles.map}
-        >
-          <Polyline
-            coordinates={
-              this.state.data ? this.state.data.route : null
-            }
-            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-            strokeColors={[
-              "#7F0000",
-              "#00000000", // no color, creates a "long" gradient between the previous and next coordinate
-              "#B24112",
-              "#E5845C",
-              "#238C23",
-              "#7F0000",
-            ]}
-            strokeWidth={6}
-          />
-        </MapView>
+      <View>
+        <Text>No Data</Text>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
-
 
 export default RouteDetailView;

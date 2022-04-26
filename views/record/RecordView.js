@@ -8,7 +8,7 @@ import Timer from './Timer'
 import SaveModal from "./SaveModal";
 import Map from './Map'
 
-import axios from 'axios';
+import { http } from '../../services'
 
 export default class RecordView extends React.Component {
     constructor(props) {
@@ -39,29 +39,32 @@ export default class RecordView extends React.Component {
 
     resume() {
         this.map.current.resumeTracking()
-        // this.timer.current.resume()
     }
     resumeTimer() {
         this.timer.current.resumeTimer()
         this.setState({ ...this.state, showModal: false })
     }
-    save() {
+    save(form) {
         this.timer.current.handleReset()
-        this.setState({ ...this.state, timer: 0, showModal: false })
 
         let coordinates = this.state.locations.map(location => {
             return [location.longitude, location.latitude]
         })
         let data = {
-            description: new Date().toUTCString(),
+            // custom description or use today's date
+            description: form.description ? form.description : new Date().toUTCString(),
             route: {
                 type: 'LineString',
                 coordinates: coordinates
-            }
+            },
+            start_time: form.start_time,
+            end_time: new Date(),
+            litter_collected_amount: form.litter_collected_amount
         }
-        axios.post('http://192.168.1.141:8000/beats/api/beat_detail', data).then(
-            response => {
-                console.log(response.data)
+        http.post('beats/api/beat_detail', data).then(
+          () => {
+                this.setState({locations: [], timer: 0, showModal: false })
+                this.props.navigation.navigate('Home')
             }
         ).catch(
             error => {
@@ -90,6 +93,7 @@ export default class RecordView extends React.Component {
                     onResume={ this.resume }
                     onReset={ this.reset }
                 />
+
                 <SaveModal
                     show={ this.state.showModal }
                     onResume={ this.resumeTimer }
