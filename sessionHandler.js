@@ -3,6 +3,7 @@ import jwt_decode from "jwt-decode";
 import { http, loginHttp } from "./services";
 import { store } from "./redux/store";
 import { setTokensAction, setAuthenticatedAction, logoutAction, setCurrentUserAction } from "./redux/reducer";
+import * as Keychain from "react-native-keychain";
 
 export default class Session {
   static login(data) {
@@ -40,7 +41,13 @@ export default class Session {
   }
 
   static async _setTokens(data) {
-    store.dispatch(setTokensAction(data));
+    // set tokens in ios keychain
+    Keychain.setGenericPassword('jwtTokens', JSON.stringify(data))
+
+    // set token in local storage: note.. insecure
+    // store.dispatch(setTokensAction(data));
+
+    // set others
     store.dispatch(setAuthenticatedAction(true));
     return await this._setHttpHeaders(data);
   }
@@ -64,14 +71,16 @@ export default class Session {
     // will inspect jwt access token and either refresh token if expired/expiring
     // or return true if valid token
     // also initiates axios headers for valid http requests
-    //
-    // get tokens from storage
-    let tokens = null;
+
+    let tokens = null
     try {
-      let stored = store.getState();
-      tokens = stored.tokens;
-      // parse stored token from json
-      // tokens !== null ? tokens = JSON.parse(tokens) : null
+      // get tokens from local storage: note.. insecure
+      // let stored = store.getState();
+
+      // get tokens from keychain
+      let stored = await Keychain.getGenericPassword()
+      tokens = JSON.parse(stored.password)
+
     } catch (error) {
       console.log(error);
       return false;

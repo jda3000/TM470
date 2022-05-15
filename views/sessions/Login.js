@@ -23,7 +23,6 @@ export default class Login extends React.Component {
     }
   }
 
-
   render () {
     return (
       <View>
@@ -56,9 +55,7 @@ export default class Login extends React.Component {
 
         <Button title='Login' onPress={this.login} />
 
-
         <Button title='Register' onPress={() => this.props.navigation.navigate('Register')} />
-
 
         {this.state.errors?.detail &&
           <Text>{ this.state.errors?.detail }</Text>
