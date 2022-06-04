@@ -77,18 +77,15 @@ export default class Map extends React.Component {
   }
 
   async startTracking(start) {
-    console.log('start tracking')
     let sub = await RNLocation.subscribeToLocationUpdates(this.updateLocations)
     this.setState({ ...this.state, locationSubscription: sub })
   }
 
   resumeTracking() {
-    console.log('resume tracking')
     this.startTracking()
   }
 
   stopTracking() {
-    console.log('stop tracking')
     if (this.state.locationSubscription) {
       this.state.locationSubscription() // close subscription to location
       this.setState({ ...this.state, showModal: true })
@@ -102,7 +99,6 @@ export default class Map extends React.Component {
 
   render() {
     let coordinates = this.props.locations
-    console.log('render', coordinates)
     return (
       <View style={ styles.container }>
         <MapView
@@ -111,7 +107,6 @@ export default class Map extends React.Component {
           showsUserLocation={ true }
           followsUserLocation={ true }
           showsMyLocationButton={ true }
-
         >
           <Polyline
             coordinates={
@@ -128,6 +123,7 @@ export default class Map extends React.Component {
             ] }
             strokeWidth={ 6 }
           />
+
         </MapView>
       </View>
     )

@@ -31,21 +31,31 @@ export default class Session {
         return { success: false, errors: error.response.data };
       },
     );
+  }
 
+  static forgottenPassword(data) {
+    return loginHttp.post('api/forgotten_password/', data).then(
+      async response => {
+        return {success: true, data: response.data}
+      }
+    ).catch(
+      error => {
+        return {success: false, errors: error.response.data}
+      }
+    )
   }
 
   static logout() {
     // clear store
     store.dispatch(logoutAction());
+    // clear ios key chain tokens
+    Keychain.resetGenericPassword()
     // clear http headers
   }
 
   static async _setTokens(data) {
     // set tokens in ios keychain
     Keychain.setGenericPassword('jwtTokens', JSON.stringify(data))
-
-    // set token in local storage: note.. insecure
-    // store.dispatch(setTokensAction(data));
 
     // set others
     store.dispatch(setAuthenticatedAction(true));
@@ -74,35 +84,39 @@ export default class Session {
 
     let tokens = null
     try {
-      // get tokens from local storage: note.. insecure
-      // let stored = store.getState();
-
       // get tokens from keychain
       let stored = await Keychain.getGenericPassword()
-      tokens = JSON.parse(stored.password)
+      if (stored) tokens = JSON.parse(stored.password)
 
     } catch (error) {
       console.log(error);
       return false;
     }
+    console.log('inspect 0')
 
     // check token is active
     if (tokens?.access && tokens?.refresh) {
       // decode stored jwt tokens
       const decodedAccess = jwt_decode(tokens.access);
+      console.log('inspect §')
 
       const expiry = decodedAccess.exp;
       const now = Date.now() / 1000;
 
       // check token expiry time
       if (expiry - now < 300) {
+        console.log('inspect 2')
+
         // less than 5 minutes to go = 300 seconds, refresh token
         return await this._refreshToken(tokens.refresh);
       } else if (expiry - now < 172800) { // 48 hours ?? need to check this
         // do nothing, return passed
         store.dispatch(setAuthenticatedAction(true));
+        console.log('inspect 3')
+
         return true;
       } else {
+        console.log('inspect 4')
         store.dispatch(setAuthenticatedAction(false));
         return false;
       }
@@ -111,14 +125,18 @@ export default class Session {
   }
 
   static async _refreshToken(refreshToken) {
+    console.log('refresh token', refreshToken)
     // init data for server
     let data = {
       refresh: refreshToken,
     };
+    console.log('------------')
+    console.log(data)
     // start request
     return await loginHttp.post("api/token/refresh/", data).then(
       async response => {
         // store access token
+        console.log('refresh toek reseponse', response.data)
         return await this._setTokens({ access: response.data.access, refresh: refreshToken });
       },
     ).catch(

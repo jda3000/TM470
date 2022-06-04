@@ -13,13 +13,13 @@ class BeatHeader extends React.Component {
   render() {
     let user;
     if (this.props.item.user.image_thumb) {
-      user = <Image source={{uri: this.props.item.user.image_thumb}}
-                    style={{width: 40, height: 40, borderRadius: 40/ 2}} />
+      user = <Image source={{ uri: this.props.item.user.image_thumb }}
+                    style={{ width: 40, height: 40, borderRadius: 40 / 2 }} />;
     } else {
-      user = <Feather name="user" size={40} />
+      user = <Feather name="user" size={40} />;
     }
     return (
-      <View style={{ flex: 2, backgroundColor: 'white' }}>
+      <View style={{ flex: 2, backgroundColor: "white" }}>
 
         <View style={{ flex: 1.5, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
           <View style={{ flex: 1, padding: 15 }}>
@@ -29,12 +29,18 @@ class BeatHeader extends React.Component {
             <Text style={{ fontWeight: "bold", padding: 3 }}> {this.props.item.user.username}</Text>
             <Text style={{ padding: 3 }}> {dayjs().to(dayjs(this.props.item.dateCreated))}</Text>
           </View>
+
           <View style={{ flex: 2 }}>
+            {
+              this.props.item.private ?
+                <Text style={{ padding: 3 }}>
+                  <Feather name="lock" /> Private
+                </Text> :
+                <Text></Text>
+            }
+
             <Text style={{ padding: 3 }}>
-              DISTANCE HERE
-            </Text>
-            <Text style={{ padding: 3 }}>
-              <Feather name="trash-2" />{this.props.item.litterCollectedAmount} Bags Collected
+              <Feather name="trash-2" /> {this.props.item.litterCollectedAmount} Bags Collected
             </Text>
           </View>
         </View>

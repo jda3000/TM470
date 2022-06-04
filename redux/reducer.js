@@ -70,7 +70,7 @@ export default (state = initialState, action) => {
       };
     case SET_LOGOUT:
       return {
-        isAuthenticated: false, tokens: { access: null, refresh: null },
+        isAuthenticated: false,
       };
     case SET_CURRENT_USER:
       return {

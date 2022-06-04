@@ -37,17 +37,25 @@ const errorInterceptor = async (error) => {
     case 404: // not found
       break;
     case 401: // authentication error, logout the user
+      console.log('401')
       if (!isAlreadyFetchingAccessToken) {
+        console.log('401 1')
+
         isAlreadyFetchingAccessToken = true;
         const originalRequest = error.config;
         let response = await Session._inspectToken()
+        console.log('401 2', response)
 
         if (response) {
+          console.log('401 3')
+
           // if successfully refresh then retry request
           // first update headers on original request
           isAlreadyFetchingAccessToken = false
           originalRequest.headers = http.defaults.headers
           return http.request(originalRequest);
+        } else {
+         Session.logout()
         }
 
       }

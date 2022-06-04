@@ -6,7 +6,6 @@ dayjs.extend(relativeTime);
 
 import {
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   StyleSheet,
@@ -17,7 +16,6 @@ import BeatHeader from './sections/BeatHeader'
 import MapView, { Polyline } from "react-native-maps";
 import { http } from "../../services";
 import convertBeat from "./helpers";
-import Feather from "react-native-vector-icons/Feather";
 import BeatFooterList from "./sections/BeatFooterList";
 
 class RouteListView extends React.Component {
@@ -47,7 +45,7 @@ class RouteListView extends React.Component {
     let excludeFirst = 0;
     if (loadMore) excludeFirst = this.state.data.length;
 
-    http.get("beats/api/list", { params: { exclude_first: excludeFirst } }).then(
+    http.get(this.props.url, { params: { exclude_first: excludeFirst } }).then(
       response => {
         let newData = this.convertServerData(response);
         if (loadMore) {
@@ -144,18 +142,16 @@ class RouteListView extends React.Component {
         <FlatList
           data={this.state.data}
           renderItem={this.renderBeat}
-          keyExtractor={(item, index) => `${item.id}${index}`}
+          keyExtractor={(item, index) => `${item.id}beat${index}`}
           refreshing={this.state.loading}
           onRefresh={this.getData}
           onEndReached={this.getMoreData}
           onEndReachedThreshold={0.8}
         />
       </View>
-
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   con: {

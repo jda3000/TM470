@@ -14,16 +14,20 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { connect } from "react-redux";
 
 import Feather from "react-native-vector-icons/Feather";
 import Session from "./sessionHandler";
-import RouteNavigation from "./views/routesList/RouteNavigation";
+
+import RouteListNavigation from "./views/routesList/RouteListNavigation";
+import ProfileNavigation from "./views/profile/ProfileNavigation";
+import RouteMapNavigation from "./views/routesMap/RouteMapNavigation";
+
 import RecordView from "./views/record/RecordView";
 
 import Login from "./views/sessions/Login";
 import Register from "./views/sessions/Register";
-import ProfileView from "./views/profile/ProfileView";
+import ForgottenPassword from "./views/sessions/ForgottenPassword";
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -34,12 +38,22 @@ function AppNavigation({ navigation, route }) {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={RouteNavigation}
+        component={RouteListNavigation}
         options={{
           tabBarLabel: "Home",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" color={color} size={size} />
+          ),
+        }} />
+      <Tab.Screen
+        name="Nearby"
+        component={RouteMapNavigation}
+        options={{
+          tabBarLabel: "Nearby",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="map" color={color} size={size} />
           ),
         }} />
       <Tab.Screen
@@ -54,10 +68,10 @@ function AppNavigation({ navigation, route }) {
         }} />
       <Tab.Screen
         name="Profile"
-        component={ProfileView}
+        component={ProfileNavigation}
         options={{
-          tabBarLabel: "Profile",
-          headerShown: true,
+          tabBarLabel: "You",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Feather name="user" color={color} size={size} />
           ),
@@ -71,8 +85,8 @@ function SessionNavigation({ navigation, route }) {
   return (
     <Stack.Navigator >
       <Stack.Screen name={'Login'}  component={Login} />
-      <Stack.Screen name={'Register'} component={Register} >
-      </Stack.Screen>
+      <Stack.Screen name={'Register'} component={Register} />
+      <Stack.Screen name={'ForgottenPassword'} component={ForgottenPassword} />
     </Stack.Navigator>
   )
 }
@@ -93,7 +107,6 @@ class App extends React.Component {
   componentDidMount() {
     Session._inspectToken()
   }
-
 
   render() {
     return (

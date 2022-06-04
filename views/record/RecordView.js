@@ -16,7 +16,8 @@ export default class RecordView extends React.Component {
         this.state = {
             locations: [],
             timer: 0,
-            showModal: false
+            showModal: false,
+            errors: null
         }
 
         this.map = React.createRef()
@@ -46,6 +47,9 @@ export default class RecordView extends React.Component {
     }
     save(form) {
         this.timer.current.handleReset()
+        // clear form
+        // clear errors
+        this.setState({...this.state, errors: null})
 
         let coordinates = this.state.locations.map(location => {
             return [location.longitude, location.latitude]
@@ -59,7 +63,8 @@ export default class RecordView extends React.Component {
             },
             start_time: form.start_time,
             end_time: new Date(),
-            litter_collected_amount: form.litter_collected_amount
+            litter_collected_amount: form.litter_collected_amount,
+            private: form.private
         }
         http.post('beats/api/beat_detail', data).then(
           () => {
@@ -69,6 +74,8 @@ export default class RecordView extends React.Component {
         ).catch(
             error => {
                 console.log('errors', error.response.data)
+                // handle errors
+                this.setState({ ...this.state, errors: error.response.data });
             }
         )
 
@@ -82,7 +89,6 @@ export default class RecordView extends React.Component {
                     locations={ this.state.locations }
                     onLocationChange={ (e) => this.setState({ ...this.state, locations: e }) }
                 />
-
                 <Timer
                     ref={ this.timer }
                     style={ styles.timer }

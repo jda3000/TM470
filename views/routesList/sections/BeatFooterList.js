@@ -23,7 +23,10 @@ class BeatFooterList extends React.Component {
   }
 
   get userHasLiked() {
-    return this.props.item.likes.map(like => like.user.id).includes(this.currentUser.id);
+    if (store.getState().currentUser) {
+      return this.props.item.likes.map(like => like.user.id).includes(this.currentUser.id);
+    }
+    return null
   }
 
   likeUnLike() {

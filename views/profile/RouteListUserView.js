@@ -1,12 +1,16 @@
-import React from 'react'
-
-import { ActionSheetIOS, Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import RouteListView from "../routesList/RouteListView";
+import { ActionSheetIOS, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import Session from "../../sessionHandler";
 
-export default class ProfileView extends React.Component {
+export default class RouteListUserView extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      url: "beats/api/beat_list_user",
+    };
+
     this.showMenu = this.showMenu.bind(this);
   }
 
@@ -17,8 +21,8 @@ export default class ProfileView extends React.Component {
           <Feather name="more-horizontal" color={color} size={25} />
         </TouchableOpacity>
       ),
-      headerRightContainerStyle: styles.headerRight
-    })
+      headerRightContainerStyle: styles.headerRight,
+    });
   }
 
   showMenu() {
@@ -47,12 +51,12 @@ export default class ProfileView extends React.Component {
     );
   }
 
-  render () {
+  render() {
     return (
-      <View style={styles.container}>
-        <Text>YourProfile Page</Text>
-      </View>
-    )
+      <RouteListView
+        url={this.state.url}
+        navigation={this.props.navigation} />
+    );
   }
 }
 
@@ -62,10 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
   },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
   headerRight: {
-    paddingRight: 17
-  }
+    paddingRight: 17,
+  },
 });
