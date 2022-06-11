@@ -70,7 +70,7 @@ export default class SaveModal extends React.Component {
         onShow={this.shown}
       >
         <View style={styles.centeredView}>
-          <Text style={styles.heading}>Save your route</Text>
+          <Text style={styles.heading}>{ this.props.data?.id ? 'Edit your route' : 'Save your route' }</Text>
 
           <TextInput
             style={styles.input}
