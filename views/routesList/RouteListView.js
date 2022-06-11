@@ -21,14 +21,14 @@ import BeatFooterList from "./sections/BeatFooterList";
 class RouteListView extends React.Component {
   constructor(props) {
     super(props);
+    this.mapRefs = [];
     this.state = {
       loading: false,
       data: [],
     };
-    this.renderBeat = this.renderBeat.bind(this);
     this.getData = this.getData.bind(this);
+    this.renderBeat = this.renderBeat.bind(this);
     this.getMoreData = this.getMoreData.bind(this);
-    this.mapRefs = [];
     this.setLikes = this.setLikes.bind(this)
   }
 
@@ -110,14 +110,8 @@ class RouteListView extends React.Component {
             coordinates={
               item.route
             }
-            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
             strokeColors={[
-              "#7F0000",
-              "#00000000", // no color, creates a "long" gradient between the previous and next coordinate
-              "#B24112",
-              "#E5845C",
-              "#238C23",
-              "#7F0000",
+             item.strokeColour
             ]}
             strokeWidth={6}
           />
@@ -138,7 +132,7 @@ class RouteListView extends React.Component {
 
   render() {
     return (
-      <View style={styles.con}>
+      <View style={styles.container}>
         <FlatList
           data={this.state.data}
           renderItem={this.renderBeat}
@@ -154,20 +148,13 @@ class RouteListView extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  con: {
-    ...StyleSheet.absoluteFillObject,
-  },
   container: {
-    // ...StyleSheet.absoluteFillObject,
-    justifyContent: "flex-end",
-    alignItems: "center",
+    ...StyleSheet.absoluteFillObject,
+    flex: 1
   },
   map: {
-    // ...StyleSheet.absoluteFillObject,
     flex: 4,
   },
-
-
   item: {
     height: 400,
     padding: 0,

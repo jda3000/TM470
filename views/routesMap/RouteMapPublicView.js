@@ -6,16 +6,16 @@ dayjs.extend(relativeTime);
 
 import {
   View,
-  StyleSheet,
+  StyleSheet, Text,
 } from "react-native";
 
 
-import MapView, { Polyline } from "react-native-maps";
+import MapView, { Polyline, Marker, Callout } from "react-native-maps";
 import { http } from "../../services";
 
 import convertBeat from "../routesList/helpers";
 import RNLocation from "react-native-location";
-
+import BeatHeader from "../routesList/sections/BeatHeader";
 
 RNLocation.configure({
     desiredAccuracy: {
@@ -34,11 +34,12 @@ class RouteMapPublicView extends React.Component {
     this.state = {
       loading: false,
       data: [],
-      initialRegion: null,
       location: {},
     };
     this.getData = this.getData.bind(this);
+    this.setRegion = this.setRegion.bind(this);
     this.setInitialLocation = this.setInitialLocation.bind(this);
+    this.setChangedLocation = this.setChangedLocation.bind(this)
   }
 
   async componentDidMount() {
@@ -72,22 +73,37 @@ class RouteMapPublicView extends React.Component {
       },
     });
   }
+  async setChangedLocation(region) {
+    this.setState({
+      ...this.state,
+      location: {
+        latitude: region.latitude,
+        longitude: region.longitude,
+        latitudeDelta: region.latitudeDelta,
+        longitudeDelta: region.longitudeDelta,
+      },
+    });
 
+    return true
+  }
   getData() {
     // load data from server based upon current location
 
     this.setState({ ...this.state, loading: true });
 
     let params = {
-      coordinates: [],
+      coordinates: {
+        type: "Point",
+        coordinates: [this.state.location.longitude, this.state.location.latitude, ]
+      },
+      latitude_delta: this.state.location.latitudeDelta,
+      longitude_delta: this.state.location.longitudeDelta
     };
+
     http.get("beats/api/beat_map", { params: params }).then(
       response => {
         let newData = this.convertServerData(response);
-
         this.setState({ data: newData, loading: false });
-
-
       },
     ).catch(
       error => {
@@ -104,17 +120,21 @@ class RouteMapPublicView extends React.Component {
     });
   }
 
+  async setRegion(region) {
+    await this.setChangedLocation(region)
+    this.getData();
+  }
+
   render() {
-    let items = this.state.data.map(item => {
+    let polygons = this.state.data.map(item => {
       return (
         <Polyline
-          key={item.id}
+          key={item.id+'polygon'}
           coordinates={
             item.route
           }
-          strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
           strokeColors={[
-            item.strokeColour
+            item.strokeColour,
           ]}
           strokeWidth={6}
           tappable={true}
@@ -123,6 +143,22 @@ class RouteMapPublicView extends React.Component {
       );
     });
 
+    let markers = this.state.data.map(item => {
+      return (
+        <Marker
+          key={item.id+'marker'}
+          title={'Marker title here'}
+          description={'Marker description here'}
+          coordinate={item.startLocation}
+          pinColor={item.strokeColour}
+          onCalloutPress={() => this.props.navigation.navigate("RouteDetailView", { id: item.id, onRefresh: this.getData })}
+        >
+          <Callout>
+            <BeatHeader item={item} />
+          </Callout>
+        </Marker>
+      )
+    })
 
     return (
       <View style={styles.con}>
@@ -132,10 +168,10 @@ class RouteMapPublicView extends React.Component {
           showsUserLocation={true}
           followsUserLocation={false}
           showsMyLocationButton={true}
+          onRegionChangeComplete={(region) => this.setRegion(region)}
         >
-
-          {items}
-
+          {polygons}
+          {markers}
         </MapView>
       </View>
     );

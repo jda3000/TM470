@@ -19,7 +19,6 @@ import Feather from "react-native-vector-icons/Feather";
 import Session from "./sessionHandler";
 
 import RouteListNavigation from "./views/routesList/RouteListNavigation";
-import ProfileNavigation from "./views/profile/ProfileNavigation";
 import RouteMapNavigation from "./views/routesMap/RouteMapNavigation";
 
 import RecordView from "./views/record/RecordView";
@@ -32,6 +31,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 import { store, persistedStore } from "./redux/store";
+import ProfileTopNavigation from "./views/profile/ProfileTopNavigation";
+import ProfileMainNavigation from "./views/profile/ProfileMainNavigation";
 
 function AppNavigation({ navigation, route }) {
   return (
@@ -68,7 +69,7 @@ function AppNavigation({ navigation, route }) {
         }} />
       <Tab.Screen
         name="Profile"
-        component={ProfileNavigation}
+        component={ProfileMainNavigation}
         options={{
           tabBarLabel: "You",
           headerShown: false,

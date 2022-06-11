@@ -12,6 +12,7 @@ import {
 
 const initialState = {
   form: {
+    id: null,
     description: null,
     start_time: new Date(),
     litter_collected_amount: 0,
@@ -22,8 +23,9 @@ const initialState = {
 export default class SaveModal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ...initialState}
+    this.state = { ...initialState }
     this.clearState = this.clearState.bind(this)
+    this.shown = this.shown.bind(this)
   }
 
   clearState () {
@@ -31,6 +33,7 @@ export default class SaveModal extends React.Component {
   }
 
   addOne() {
+    console.log(this.state.form.litter_collected_amount)
     this.setState({
       ...this.state,
       form: { ...this.state.form, litter_collected_amount: this.state.form.litter_collected_amount += 1 },
@@ -44,6 +47,19 @@ export default class SaveModal extends React.Component {
     });
   }
 
+  shown () {
+    // guards
+    // if not edit mode then do nothing
+    if (!this.props.data?.id) return
+    // set edit values
+    this.setState({form: {
+        id: this.props.data.id,
+        description: this.props.data.description,
+        litter_collected_amount: this.props.data.litterCollectedAmount,
+        private: this.props.data.private
+      }})
+  }
+
   render() {
     return (
       <Modal
@@ -51,6 +67,7 @@ export default class SaveModal extends React.Component {
         presentationStyle="formSheet"
         visible={this.props.show}
         onRequestClose={this.props.onResume}
+        onShow={this.shown}
       >
         <View style={styles.centeredView}>
           <Text style={styles.heading}>Save your route</Text>

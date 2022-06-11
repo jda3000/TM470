@@ -37,7 +37,7 @@ const errorInterceptor = async (error) => {
     case 404: // not found
       break;
     case 401: // authentication error, logout the user
-      console.log('401')
+      console.log('401', isAlreadyFetchingAccessToken)
       if (!isAlreadyFetchingAccessToken) {
         console.log('401 1')
 
@@ -57,7 +57,6 @@ const errorInterceptor = async (error) => {
         } else {
          Session.logout()
         }
-
       }
       break;
     case 403: // Permission Denied

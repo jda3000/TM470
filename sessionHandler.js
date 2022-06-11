@@ -125,13 +125,10 @@ export default class Session {
   }
 
   static async _refreshToken(refreshToken) {
-    console.log('refresh token', refreshToken)
     // init data for server
     let data = {
       refresh: refreshToken,
     };
-    console.log('------------')
-    console.log(data)
     // start request
     return await loginHttp.post("api/token/refresh/", data).then(
       async response => {

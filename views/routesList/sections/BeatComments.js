@@ -43,7 +43,6 @@ class BeatComments extends React.Component {
   }
 
   onChangeText(value) {
-    console.log("value", value);
     this.setState({ ...this.state, form: { ...this.state.form, post: value } });
   }
 
@@ -56,7 +55,6 @@ class BeatComments extends React.Component {
     // save
     http.post("common/api/comment_detail", data).then(
       response => {
-        console.log(response);
         this.fetchComments();
         this.clearForm();
       },
@@ -77,7 +75,6 @@ class BeatComments extends React.Component {
     };
     http.get("common/api/comment_list", { params: params }).then(
       response => {
-        console.log(response);
         this.props.onCommentsChange(response.data);
       },
     ).catch(

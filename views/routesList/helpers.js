@@ -26,6 +26,12 @@ export default function convertBeat(rawBeat) {
     };
   }).flat();
 
+  let startLocation = {
+    longitude: rawBeat.start_point.coordinates[0],
+    latitude: rawBeat.start_point.coordinates[1],
+  }
+
+
   // calculate distance covered
   let totalDistance = 0;
   for (let i = 1; i < coordinates.length; i++) {
@@ -35,7 +41,6 @@ export default function convertBeat(rawBeat) {
   // colour of route; based upon amount of litter collected
   let litterCollected = rawBeat.litter_collected_amount ? rawBeat.litter_collected_amount : 0;
   let bagsPer100Meters = (litterCollected / totalDistance) * 100
-  console.log('bagsPer100Meters', bagsPer100Meters)
   let strokeColour = "#7F0000";
   if (bagsPer100Meters > 1) strokeColour = "#7F0000";
   else if (bagsPer100Meters > 0.7 && bagsPer100Meters <= 1) strokeColour = "#E5845C";
@@ -64,6 +69,8 @@ export default function convertBeat(rawBeat) {
     private: rawBeat.private,
     strokeColour: strokeColour,
     distance: totalDistance, // meters
+    startLocation: startLocation,
+    following: rawBeat.following
   };
 
 

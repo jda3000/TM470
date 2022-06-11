@@ -2,13 +2,26 @@ import React from "react";
 
 import {
   View,
-  Text, Image,
+  Text, Image
 } from "react-native";
 
 import Feather from "react-native-vector-icons/Feather";
 import dayjs from "dayjs";
 
 class BeatHeader extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.distanceLabel = this.distanceLabel.bind(this)
+  }
+
+  distanceLabel (meters) {
+    let metersRounded = Number(meters).toFixed(0)
+    if (metersRounded > 100) {
+      return `${metersRounded/1000} km's`
+    }
+    return `${metersRounded} meters`
+  }
 
   render() {
     let user;
@@ -38,6 +51,9 @@ class BeatHeader extends React.Component {
                 </Text> :
                 <Text></Text>
             }
+            <Text style={{ padding: 3 }}>
+              <Feather name="compass" /> {this.distanceLabel(this.props.item.distance)}
+            </Text>
 
             <Text style={{ padding: 3 }}>
               <Feather name="trash-2" /> {this.props.item.litterCollectedAmount} Bags Collected
